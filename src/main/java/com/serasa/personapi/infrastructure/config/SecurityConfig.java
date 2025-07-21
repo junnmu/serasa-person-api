@@ -1,6 +1,8 @@
 package com.serasa.personapi.infrastructure.config;
 
 import com.serasa.personapi.domain.auth.business.JwtFilter;
+import com.serasa.personapi.infrastructure.exception.handler.JwtAccessDeniedHandler;
+import com.serasa.personapi.infrastructure.exception.handler.JwtAuthenticationEntryPoint;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +23,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
+    private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+    private final JwtAccessDeniedHandler accessDeniedHandler;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -42,6 +46,10 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/person/**").hasAnyRole("USER", "ADMIN")
                 .requestMatchers("/person/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
+            )
+            .exceptionHandling(ex -> ex
+                .authenticationEntryPoint(authenticationEntryPoint)
+                .accessDeniedHandler(accessDeniedHandler)
             )
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
