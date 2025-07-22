@@ -2,6 +2,7 @@ package com.serasa.personapi.domain.person;
 
 import com.serasa.personapi.infrastructure.client.viacep.exchange.response.ViaCepResponse;
 import com.serasa.personapi.infrastructure.exchange.request.PersonRequest;
+import com.serasa.personapi.infrastructure.exchange.request.PersonUpdateRequest;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -44,6 +45,22 @@ public class Person {
         this.phone = request.getPhone();
         this.score = request.getScore();
         this.active = true;
+    }
+
+    public Person merge(PersonUpdateRequest request, ViaCepResponse address) {
+        this.name = request.getName() != null ? request.getName() : this.name;
+        this.age = request.getAge() != null ? request.getAge() : this.age;
+        this.cep = request.getCep() != null ? request.getCep() : this.cep;
+        this.phone = request.getPhone() != null ? request.getPhone() : this.phone;
+        this.score = request.getScore() != null ? request.getScore() : this.score;
+        if (address != null) {
+            this.state = address.getState();
+            this.city = address.getCity();
+            this.neighborhood = address.getNeighborhood();
+            this.street = address.getStreet();
+        }
+
+        return this;
     }
 
     public String getScoreDescription() {

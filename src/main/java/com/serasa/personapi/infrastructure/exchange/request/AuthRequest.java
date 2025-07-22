@@ -1,6 +1,5 @@
 package com.serasa.personapi.infrastructure.exchange.request;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

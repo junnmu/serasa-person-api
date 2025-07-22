@@ -10,7 +10,7 @@ public class PhoneValidator implements ConstraintValidator<ValidPhone, String> {
     @Override
     public boolean isValid(String phone, ConstraintValidatorContext context) {
         if (phone == null || phone.isBlank()) {
-            return false;
+            return true;
         }
         return phone.replaceAll("[^\\d]", "").matches(PHONE_REGEX);
     }
