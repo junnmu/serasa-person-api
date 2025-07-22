@@ -1,10 +1,11 @@
 package com.serasa.personapi.infrastructure.exchange.response;
 
-import lombok.Builder;
+import com.serasa.personapi.domain.person.Person;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@Builder
+@AllArgsConstructor
 public class PersonResponse {
     private String name;
     private Integer age;
@@ -16,4 +17,17 @@ public class PersonResponse {
     private String street;
     private Integer score;
     private String scoreDescription;
+
+    public PersonResponse(Person person) {
+        this.name = person.getName();
+        this.age = person.getAge();
+        this.cep = person.getCep();
+        this.state = person.getState();
+        this.city = person.getCity();
+        this.neighborhood = person.getNeighborhood();
+        this.street = person.getStreet();
+        this.phone = person.getPhone();
+        this.score = person.getScore();
+        this.scoreDescription = person.getScoreDescription();
+    }
 }
