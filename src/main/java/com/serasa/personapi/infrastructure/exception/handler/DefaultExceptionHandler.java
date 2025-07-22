@@ -11,9 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class DefaultExceptionHandler {
@@ -38,14 +36,14 @@ public class DefaultExceptionHandler {
         var errors = ex.getBindingResult()
             .getFieldErrors()
             .stream().map(error -> new ErrorMessage("SER-10004", error.getField() + " " + error.getDefaultMessage()))
-            .collect(Collectors.toList());
+            .toList();
 
         return buildResponse(400, new ErrorResponse(errors));
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleUnexpectedException(Exception ex) {
-        System.out.println(ex.getClass());
+        System.out.println(ex.getMessage());
         return buildResponse(500, "SER-20001", "Unexpected Error");
     }
 

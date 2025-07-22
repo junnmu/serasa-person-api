@@ -1,7 +1,5 @@
 package com.serasa.personapi.domain.person;
 
-import com.serasa.personapi.infrastructure.client.viacep.exchange.response.ViaCepResponse;
-import com.serasa.personapi.infrastructure.exchange.request.PersonRequest;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

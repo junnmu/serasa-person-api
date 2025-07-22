@@ -2,7 +2,6 @@ package com.serasa.personapi.infrastructure.exception.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serasa.personapi.infrastructure.exchange.error.ErrorMessage;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
@@ -10,7 +9,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.io.OutputStream;
 
 @Component
