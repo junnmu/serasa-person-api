@@ -1,6 +1,7 @@
 package com.serasa.personapi.infrastructure.exception.handler;
 
 import com.serasa.personapi.infrastructure.exception.InvalidCepException;
+import com.serasa.personapi.infrastructure.exception.PersonNotFoundException;
 import com.serasa.personapi.infrastructure.exception.ViaCepBadRequestException;
 import com.serasa.personapi.infrastructure.exception.ViaCepIntegrationException;
 import com.serasa.personapi.infrastructure.exchange.error.ErrorMessage;
@@ -18,7 +19,7 @@ public class DefaultExceptionHandler {
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleBadCredentialsException() {
-        return buildResponse(400, "SER-10001", "Invalid Credentials");
+        return buildResponse(400, "SER-10001", "Invalid credentials");
     }
 
     @ExceptionHandler(ViaCepBadRequestException.class)
@@ -41,10 +42,15 @@ public class DefaultExceptionHandler {
         return buildResponse(400, new ErrorResponse(errors));
     }
 
+    @ExceptionHandler(PersonNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handlePersonNotFoundException() {
+        return buildResponse(404, "SER-10007", "Person not found");
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleUnexpectedException(Exception ex) {
         System.out.println(ex.getMessage());
-        return buildResponse(500, "SER-20001", "Unexpected Error");
+        return buildResponse(500, "SER-20001", "Unexpected error");
     }
 
     @ExceptionHandler(ViaCepIntegrationException.class)

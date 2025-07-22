@@ -1,6 +1,7 @@
 package com.serasa.personapi.domain.person.business;
 
 import com.serasa.personapi.domain.person.Person;
+import com.serasa.personapi.infrastructure.exception.PersonNotFoundException;
 import com.serasa.personapi.infrastructure.exchange.request.PersonRequest;
 import com.serasa.personapi.infrastructure.exchange.request.params.PersonSearchParams;
 import com.serasa.personapi.infrastructure.exchange.response.PaginatedPersonResponse;
@@ -26,7 +27,7 @@ public class PersonService {
         return new PersonResponse(personRepository.save(person));
     }
 
-    public PaginatedPersonResponse searchPersons(PersonSearchParams searchParams) {
+    public PaginatedPersonResponse search(PersonSearchParams searchParams) {
         var pageable = PageRequest.of(searchParams.getCurrentPage(), searchParams.getItemsPerPage());
         var filter = new Person();
 
@@ -41,5 +42,13 @@ public class PersonService {
 
         var page = personRepository.findAll(Example.of(filter, matcher), pageable);
         return new PaginatedPersonResponse(page.getContent(), page);
+    }
+
+    public void delete(Long id) {
+        var person = personRepository.findByIdAndActiveTrue(id)
+            .orElseThrow(() -> new PersonNotFoundException("Person not found"));
+
+        person.setActive(false);
+        personRepository.save(person);
     }
 }
