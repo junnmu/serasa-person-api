@@ -13,6 +13,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Arrays;
+
 @Entity
 @Getter
 @Setter
@@ -64,9 +66,10 @@ public class Person {
     }
 
     public String getScoreDescription() {
-        if (score <= 200) return ScoreDescription.INSUFFICIENT.getValue();
-        if (score <= 500) return ScoreDescription.UNACCEPTABLE.getValue();
-        if (score <= 700) return ScoreDescription.ACCEPTABLE.getValue();
-        return ScoreDescription.RECOMMENDED.getValue();
+        return Arrays.stream(ScoreDescription.values())
+            .filter(desc -> desc.inRange(score))
+            .findFirst()
+            .map(ScoreDescription::getValue)
+            .orElse("Unknown");
     }
 }
