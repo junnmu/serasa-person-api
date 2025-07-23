@@ -4,12 +4,14 @@ import com.serasa.personapi.domain.person.Person;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 @Getter
 @Builder
+@ToString
 @AllArgsConstructor
 public class PaginatedPersonResponse {
     private List<PersonResponse> persons;

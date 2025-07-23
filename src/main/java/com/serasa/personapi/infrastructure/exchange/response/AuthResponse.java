@@ -7,4 +7,9 @@ import lombok.Data;
 @AllArgsConstructor
 public class AuthResponse {
     private String token;
+
+    @Override
+    public String toString() {
+        return "AuthResponse(token=*****)";
+    }
 }

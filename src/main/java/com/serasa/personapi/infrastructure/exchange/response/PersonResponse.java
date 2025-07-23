@@ -3,8 +3,10 @@ package com.serasa.personapi.infrastructure.exchange.response;
 import com.serasa.personapi.domain.person.Person;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@ToString
 @AllArgsConstructor
 public class PersonResponse {
     private String name;
