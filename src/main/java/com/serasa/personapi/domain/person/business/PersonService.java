@@ -9,11 +9,13 @@ import com.serasa.personapi.infrastructure.exchange.response.PaginatedPersonResp
 import com.serasa.personapi.infrastructure.exchange.response.PersonResponse;
 import com.serasa.personapi.infrastructure.repository.PersonRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class PersonService {
@@ -22,6 +24,8 @@ public class PersonService {
     private final ViaCepService viaCepService;
 
     public PersonResponse create(PersonRequest request) {
+        log.info("class=PersonService, method=create, info=Starting creation flow");
+
         var address = viaCepService.getAddress(request.getCep());
         var person = new Person(request, address);
 
@@ -29,6 +33,8 @@ public class PersonService {
     }
 
     public PaginatedPersonResponse search(PersonSearchParams searchParams) {
+        log.info("class=PersonService, method=search, info=Starting search flow");
+
         var pageable = PageRequest.of(searchParams.getCurrentPage(), searchParams.getItemsPerPage());
         var filter = new Person();
 
@@ -46,6 +52,8 @@ public class PersonService {
     }
 
     public PersonResponse update(Long id, PersonUpdateRequest request) {
+        log.info("class=PersonService, method=update, info=Starting update flow");
+
         var person = getPerson(id);
         var address = request.getCep() != null ? viaCepService.getAddress(request.getCep()) : null;
 
@@ -53,6 +61,8 @@ public class PersonService {
     }
 
     public void delete(Long id) {
+        log.info("class=PersonService, method=delete, info=Starting delete flow");
+
         var person = getPerson(id);
 
         person.setActive(false);

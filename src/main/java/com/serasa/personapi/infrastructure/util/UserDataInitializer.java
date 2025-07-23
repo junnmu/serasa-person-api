@@ -20,13 +20,10 @@ public class UserDataInitializer {
 
     @PostConstruct
     public void createUsers() {
-        if (userRepository.count() == 0) {
-            List<User> users = List.of(
-                new User(1L, "admin", passwordEncoder.encode("admin123"), Set.of(Role.ROLE_ADMIN)),
-                new User(2L, "user1", passwordEncoder.encode("user123"), Set.of(Role.ROLE_USER)),
-                new User(3L, "user2", passwordEncoder.encode("user456"), Set.of(Role.ROLE_USER))
-            );
-            userRepository.saveAll(users);
-        }
+        List<User> users = List.of(
+            new User(1L, "admin", passwordEncoder.encode("admin"), Set.of(Role.ROLE_ADMIN)),
+            new User(2L, "marcelo", passwordEncoder.encode("marcelo123"), Set.of(Role.ROLE_USER))
+        );
+        userRepository.saveAll(users);
     }
 }
