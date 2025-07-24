@@ -4,6 +4,7 @@ import com.serasa.personapi.infrastructure.exception.InvalidCepException;
 import com.serasa.personapi.infrastructure.exception.PersonNotFoundException;
 import com.serasa.personapi.infrastructure.exception.ViaCepBadRequestException;
 import com.serasa.personapi.infrastructure.exception.ViaCepIntegrationException;
+import com.serasa.personapi.infrastructure.exchange.error.ErrorCode;
 import com.serasa.personapi.infrastructure.exchange.error.ErrorMessage;
 import com.serasa.personapi.infrastructure.exchange.error.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -28,24 +29,26 @@ public class DefaultExceptionHandler {
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException ex) {
-        return buildResponse(BAD_REQUEST, "SER-10001", "Invalid credentials", ex);
+        return buildResponse(BAD_REQUEST, ErrorCode.INVALID_CREDENTIALS, ex);
     }
 
     @ExceptionHandler(ViaCepBadRequestException.class)
     public ResponseEntity<ErrorResponse> handleViaCepBadRequestException(ViaCepBadRequestException ex) {
-        return buildResponse(BAD_REQUEST, "SER-10002", "ViaCep returning a BAD REQUEST", ex);
+        return buildResponse(BAD_REQUEST, ErrorCode.VIACEP_BAD_REQUEST, ex);
     }
 
     @ExceptionHandler(InvalidCepException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidCepExceptionException(InvalidCepException ex) {
-        return buildResponse(BAD_REQUEST, "SER-10003", ex.getMessage(), ex);
+    public ResponseEntity<ErrorResponse> handleInvalidCepException(InvalidCepException ex) {
+        return buildResponse(BAD_REQUEST, ErrorCode.INVALID_CEP, ex);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         var errors = ex.getBindingResult()
             .getFieldErrors()
-            .stream().map(error -> new ErrorMessage("SER-10004", error.getField() + " " + error.getDefaultMessage()))
+            .stream().map(error -> new ErrorMessage(
+                ErrorCode.FIELD_VALIDATION_ERROR.getCode(), error.getField() + " " + error.getDefaultMessage())
+            )
             .toList();
 
         return logExceptionAndBuildResponse(BAD_REQUEST, new ErrorResponse(errors), ex);
@@ -53,28 +56,26 @@ public class DefaultExceptionHandler {
 
     @ExceptionHandler(PersonNotFoundException.class)
     public ResponseEntity<ErrorResponse> handlePersonNotFoundException(PersonNotFoundException ex) {
-        return buildResponse(NOT_FOUND, "SER-10007", "Person not found", ex);
+        return buildResponse(NOT_FOUND, ErrorCode.PERSON_NOT_FOUND, ex);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleUnexpectedException(Exception ex) throws Exception {
         if (ex instanceof AccessDeniedException) throw ex;
-
-        return buildResponse(INTERNAL_SERVER_ERROR, "SER-20001", "Unexpected error", ex);
+        return buildResponse(INTERNAL_SERVER_ERROR, ErrorCode.UNEXPECTED_ERROR, ex);
     }
 
     @ExceptionHandler(ViaCepIntegrationException.class)
     public ResponseEntity<ErrorResponse> handleViaCepIntegrationException(ViaCepIntegrationException ex) {
-        return buildResponse(INTERNAL_SERVER_ERROR, "SER-20002", "Error integrating with ViaCep", ex);
+        return buildResponse(INTERNAL_SERVER_ERROR, ErrorCode.VIACEP_INTEGRATION_ERROR, ex);
     }
 
     private ResponseEntity<ErrorResponse> buildResponse(
         final HttpStatusCode statusCode,
-        final String code,
-        final String message,
+        final ErrorCode errorCode,
         final Exception ex
     ) {
-        var response = new ErrorResponse(List.of(new ErrorMessage(code, message)));
+        var response = new ErrorResponse(List.of(new ErrorMessage(errorCode.getCode(), errorCode.getMessage())));
         return logExceptionAndBuildResponse(statusCode, response, ex);
     }
 
