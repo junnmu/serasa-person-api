@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -56,8 +57,9 @@ public class DefaultExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleUnexpectedException(Exception ex) {
-        System.out.println(ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleUnexpectedException(Exception ex) throws Exception {
+        if (ex instanceof AccessDeniedException) throw ex;
+
         return buildResponse(INTERNAL_SERVER_ERROR, "SER-20001", "Unexpected error", ex);
     }
 
