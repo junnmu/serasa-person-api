@@ -84,18 +84,17 @@ public class DefaultExceptionHandler {
         final ErrorResponse errorResponse,
         final Exception ex
     ) {
+        var message = String.format(
+            "class=DefaultExceptionHandler, method=logExceptionAndBuildResponse, statusCode=%d, exception=%s, stackTrace=%s",
+            statusCode.value(),
+            ex.getClass().getSimpleName(),
+            ExceptionUtils.getStackTrace(ex)
+        );
+
         if (statusCode.is5xxServerError()) {
-            log.error("class=DefaultExceptionHandler, method=logExceptionAndBuildResponse, statusCode={}, exception={}, stackTrace={}",
-                statusCode.value(),
-                ex.getClass().getName(),
-                ExceptionUtils.getStackTrace(ex)
-            );
+            log.error(message);
         } else {
-            log.warn("class=DefaultExceptionHandler, method=logExceptionAndBuildResponse, statusCode={}, exception={}, stackTrace={}",
-                statusCode.value(),
-                ex.getClass().getSimpleName(),
-                ExceptionUtils.getStackTrace(ex)
-            );
+            log.warn(message);
         }
 
         return ResponseEntity.status(statusCode).body(errorResponse);
